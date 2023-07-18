@@ -3,7 +3,9 @@ import axios from "axios";
 
 function App() {
   const [data, setData] = useState([]);
-  const [formData, setFormData] = useState({});
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [likes, setLikes] = useState(1);
 
   const fetchData = async () => {
     try {
@@ -15,38 +17,16 @@ function App() {
     }
   };
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.value]: e.target.value });
-  };
-
-  /*const sendData = async (formData) => {
-    try {
-      axios.post("https://one-server.onrender.com/post", formData);
-      const response = response.data;
-    } catch (error) {
-      console.error({ message: error.message });
-    }
-  };*/
-
-  function sendData(formData) {
-    axios
-      .post("https://one-server.onrender.com/post", formData)
-      .then((response) => {
-        console.log("Success:", response.data);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }
-
-  const handleSubmit = (e) => {
+  const handlePost = (e) => {
     e.preventDefault();
-    sendData(formData);
+    axios
+      .post("https://one-server.onrender.com/post", { title, content, likes })
+      .then((response) => console.log(response))
+      .catch((error) => console.log(error));
   };
 
   useEffect(() => {
     fetchData();
-    sendData();
   }, []);
 
   return (
@@ -61,20 +41,26 @@ function App() {
         ))}
       </div>
       <hr />
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handlePost}>
         <input
           type="text"
           placeholder="title"
           name="title"
           required
-          onChange={handleChange}
+          onChange={(e) => setTitle(e.target.value)}
         />
         <input
           type="text"
           placeholder="Post..."
           name="content"
           required
-          onChange={handleChange}
+          onChange={(e) => setContent(e.target.value)}
+        />
+        <input
+          type="Number"
+          placeholder="Likes"
+          name="likes"
+          onChange={(e) => setLikes(e.target.value)}
         />
         <button type="submit">Submit</button>
       </form>
